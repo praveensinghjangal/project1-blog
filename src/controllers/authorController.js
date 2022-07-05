@@ -96,7 +96,7 @@ const createAuthor = async function (req, res) {
         }
      
         const finalData = await authorModel.create(authordata);
-        return res.status(201).send({ msg: finalData })
+        return res.status(201).send({ status: true, data: finalData })
     }
     
     catch (error) {
@@ -120,11 +120,11 @@ const authorLogin = async function (req, res) {
     const password = req.body.password
 
     if (!username && !password) {
-        return res.send({ status: false, msg: "Please Enter the Email & password" })
+        return res.status(400).send({ status: false, msg: "Please Enter the Email & password" })
     } else {
 
         if (!username) {
-            return res.send({ status: false, msg: "Please Enter the Email" })
+            return res.status(400).send({ status: false, msg: "Please Enter the Email" })
         }
 
         let checkEmail = validator.validate(username)
@@ -133,7 +133,7 @@ const authorLogin = async function (req, res) {
         }
 
         if (!password) {
-            return res.send({ status: false, msg: "Please Enter the Password" })
+            return res.status(400).send({ status: false, msg: "Please Enter the Password" })
         }
 
     }
@@ -141,19 +141,22 @@ const authorLogin = async function (req, res) {
     console.log(username);
     const findAuthor = await authorModel.findOne({ email: username, password: password })
     if (!findAuthor) {
-        return res.status(404).send({ status: false, msg: "Make sure your email & Password Correct. sorry No Author found Or Your Credentials are not Matched, Please Create Author first" })
+        return res.status(401).send({ status: false, data: "Make sure your email & Password Correct. sorry No Author found Or Your Credentials are not Matched, Please Create Author first" })
     }
 
 
     const token = jwt.sign({
         userId: findAuthor._id.toString(),
-        autherType: "test",
-        projectName: "blog-project"
+        iat:Math.floor(Date.now() / 1000),
+        exp:Math.floor(Date.now() / 1000) + 10*60*60
+
+        // autherType: "test",
+        // projectName: "blog-project"
     }, "my-first-blog-project"
     )
 
-    res.setHeader("x-auth-key", token)
-    return res.send({ status: true, token: token })
+    res.setHeader("x-api-key", token)
+    return res.status(201).send({ status: true, data: token })
 
 }
 

@@ -1,29 +1,44 @@
 const express = require('express');
 const router = express.Router();
 const autherController = require('../controllers/authorController');
-const blogController = require('../controllers/blogController')
+const blogController = require('../controllers/blogController');
 const mw = require('../middleware/auth1&auth2')
 
-router.get('/test-me', function (req, res) {
-    res.send('My first ever api!')
-});
+
+//API for Create New Author
+router.post('/authors', autherController.createAuthor )
+
+//API for Create New Blog
+router.post('/blogs',mw.authentication, blogController.createBlog )
+
+//API for Get the blog 
+router.get('/blogs',mw.authentication, blogController.getBlogs)
+
+
+router.put('/blogs/:blogId',mw.authentication,mw.authorizationParams, blogController.updateBlog)
+
+
+router.delete('/blogs/:blogId', mw.authentication, mw.authorizationParams , blogController.deleteBlogByPath)
+
+
+router.delete('/blogs/',mw.authentication, mw.authorizationQuery, blogController.deleteBlogByQuery)
+
+
+router.post('/login', autherController.authorLogin)
 
 
 
-//API for Create Auther
-router.post('/authors', autherController.createAuthor )                     
- router.post('/blogs', mw.authentication, mw.authorizationBody, blogController.createBlog )         //auth //auth
 
- router.get('/getBlog',  mw.authentication, blogController.getBlogs )                        //auth
- router.put('/updateblog/:blogId',mw.authentication, mw.authorizationParams, blogController.updateBlog )              //auth //auth              
- router.delete('/delete', mw.authentication, mw.authorizationParams,blogController.deleteBlogByPath )                      //auth //auth
+// if api is invalid OR wrong URL
 
-router.get('/login', autherController.authorLogin)
-
-
+router.all("/**", function (req, res) {
+    res.status(404).send({
+        status: false,
+        msg: "Make Sure Your Endpoint is Correct or Not!"
+    })
+})
 
 
- router.delete('/deletequery',mw.authentication,mw.authorizationQuery, blogController.deleteBlogByQuery )           //auth //auth
 
 module.exports = router;
 // adding this comment for no reason

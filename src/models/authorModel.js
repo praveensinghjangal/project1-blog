@@ -4,20 +4,24 @@ const mongoose = require('mongoose');
 const authorSchema = new mongoose.Schema( {
      fname: { 
         type: String,
-        require: true
+        require: true,
+        trim:true
     },
      lname: {
         type: String,
-        require: true
+        require: true,
+        trim:true
      },
       title: {
         type: String,
         require: true,
-        enum: ["Mr", "Mrs", "Miss"]
+        enum: ["Mr", "Mrs", "Miss"],
+        trim:true
     },
        email: {
         type: String,
         require: true,
+        lowercase: true,
         unique: true,
         // 'valid email': [validateEmail, 'Please fill a valid email address'],
         trim: true

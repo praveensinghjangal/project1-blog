@@ -4,12 +4,16 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 const blogsSchema = new mongoose.Schema( {
      title: {
         type: String,
-        require: true
+        require: true,
+        trim:true
+    
     }, 
      
     body: {
         type: String,
-        require: true
+        require: true,
+        trim:true
+        
     }, 
      
     authorId: {
@@ -17,21 +21,26 @@ const blogsSchema = new mongoose.Schema( {
     ref:'Author'
     },
 
-    tags: [String], 
-     
+    tags: [{
+        type:String,
+        trim: true}],
+        
     category: {
         type: String,
-        require: true
+        require: true,
+        
     }, 
           //  examples: [technology, entertainment, life style, food, fashion]},
-     subcategory: [String, String ,String],
+     subcategory: [{type:String,
+     trim:true 
+     }],
           //  examples[technology-[web development, mobile development, AI, ML etc]] },
-     deletedAt: Date, 
+     deletedAt: { type: Date, default: null}, 
      isDeleted: {
         type:Boolean,
         default: false
     }, 
-     publishedAt: Date, 
+     publishedAt:  { type: Date, default: null},
      isPublished: {
         type:Boolean,
         default: false
